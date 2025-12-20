@@ -11,9 +11,6 @@ using System.Windows.Shapes;
 
 namespace winlauncher
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -39,9 +36,16 @@ namespace winlauncher
         }
         private void LaunchSelected()
         {
-            if (ResultsList.SelectedItem is string item)
+            if(ResultsList.SelectedItem is string app)
             {
-                MessageBox.Show("Would launch: " + item);
+                try
+                {
+                    System.Diagnostics.Process.Start(app);
+                }
+                catch
+                {
+                    MessageBox.Show("Could not launch " + app);
+                }
             }
         }
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -60,14 +64,11 @@ namespace winlauncher
 
         private List<string> _apps = new List<string>
         {
-            "Notepad",
-            "Calculator",
-            "Paint",
-            "Command Prompt",
-            "PowerShell",
-            "Visual Studio",
-            "Chrome",
-            "Firefox"
+            "notepad",
+            "calc",
+            "mspaint",
+            "cmd",
+            "powershell"
         };
 
 
