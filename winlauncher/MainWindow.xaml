@@ -7,12 +7,28 @@
     WindowStyle="None"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
-    Background="#FF1E1E1E">
+    Background="#FF1E1E1E"
+    KeyDown="Window_KeyDown">
+
     <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- search box -->
         <TextBox x:Name="SearchBox"
              FontSize="20"
              Padding="8"
-             VerticalContentAlignment="Center"/>
+             VerticalContentAlignment="Center"
+             Margin="0,0,0,10"
+             TextChanged="SearchBox_TextChanged"/>
+
+        <!-- results list -->
+        <ListBox x:Name="ResultsList"
+             Grid.Row="1"
+             FontSize="16"/>
     </Grid>
+
 
 </Window>

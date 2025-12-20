@@ -19,6 +19,58 @@ namespace winlauncher
         public MainWindow()
         {
             InitializeComponent();
+            ResultsList.ItemsSource = _apps;
         }
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                this.Hide();
+
+            else if (e.Key == Key.Enter)
+                LaunchSelected();
+
+            else if (e.Key == Key.Down)
+                ResultsList.SelectedIndex =
+                    Math.Min(ResultsList.SelectedIndex + 1, ResultsList.Items.Count - 1);
+
+            else if (e.Key == Key.Up)
+                ResultsList.SelectedIndex =
+                    Math.Max(ResultsList.SelectedIndex - 1, 0);
+        }
+        private void LaunchSelected()
+        {
+            if (ResultsList.SelectedItem is string item)
+            {
+                MessageBox.Show("Would launch: " + item);
+            }
+        }
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string query = SearchBox.Text.ToLower();
+
+            var filtered = _apps
+                .Where(a => a.ToLower().Contains(query))
+                .ToList();
+
+            ResultsList.ItemsSource = filtered;
+
+            if (filtered.Count > 0)
+                ResultsList.SelectedIndex = 0;
+        }
+
+        private List<string> _apps = new List<string>
+        {
+            "Notepad",
+            "Calculator",
+            "Paint",
+            "Command Prompt",
+            "PowerShell",
+            "Visual Studio",
+            "Chrome",
+            "Firefox"
+        };
+
+
+
     }
 }
