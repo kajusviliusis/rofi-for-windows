@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using IWshRuntimeLibrary;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+//using System.Windows.Shapes;
 
 namespace winlauncher
 {
@@ -19,6 +21,7 @@ namespace winlauncher
         public MainWindow()
         {
             InitializeComponent();
+            _apps = LoadStartMenuApps();
             ResultsList.ItemsSource = _apps;
             this.Loaded += MainWindow_Loaded;
 
@@ -41,15 +44,15 @@ namespace winlauncher
         }
         private void LaunchSelected()
         {
-            if(ResultsList.SelectedItem is string app)
+            if(ResultsList.SelectedItem is AppEntry app)
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(app);
+                    System.Diagnostics.Process.Start(app.Path);
                 }
                 catch
                 {
-                    MessageBox.Show("Could not launch " + app);
+                    MessageBox.Show("Could not launch " + app.Name);
                 }
             }
         }
@@ -58,7 +61,7 @@ namespace winlauncher
             string query = SearchBox.Text.ToLower();
 
             var filtered = _apps
-                .Where(a => a.ToLower().Contains(query))
+                .Where(a => a.Name.ToLower().Contains(query))
                 .ToList();
 
             ResultsList.ItemsSource = filtered;
@@ -98,7 +101,7 @@ namespace winlauncher
             var source = System.Windows.Interop.HwndSource.FromHwnd(helper.Handle);
             source.AddHook(HwndHook);
         }
-
+        
         protected override void OnClosed(EventArgs e)
         {
             var helper = new System.Windows.Interop.WindowInteropHelper(this);
@@ -112,15 +115,49 @@ namespace winlauncher
         [DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        private List<string> _apps = new List<string>
+        private List<AppEntry> LoadStartMenuApps()
         {
-            "notepad",
-            "calc",
-            "mspaint",
-            "cmd",
-            "powershell"
-        };
+            var apps = new List<AppEntry>();
 
+            string[] startMenuPaths =
+            {
+                Environment.GetFolderPath(Environment.SpecialFolder.CommonStartMenu),
+                Environment.GetFolderPath(Environment.SpecialFolder.StartMenu)
+            };
+
+            foreach (var path in startMenuPaths)
+            {
+                foreach (var file in Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories))
+                {
+                    var shortcut = GetShortcutTarget(file);
+                    if (shortcut != null)
+                    {
+                        apps.Add(new AppEntry
+                        {
+                            Name = Path.GetFileNameWithoutExtension(file),
+                            Path = shortcut
+                        });
+                    }
+                }
+            }
+
+            return apps;
+        }
+        private string? GetShortcutTarget(string shortcutPath)
+        {
+            try
+            {
+                var shell = new WshShell();
+                IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutPath);
+                return link.TargetPath;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private List<AppEntry> _apps = new List<AppEntry>();
 
 
     }

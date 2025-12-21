@@ -26,7 +26,7 @@
              TextChanged="SearchBox_TextChanged"/>
 
         <!-- results list -->
-        <ListBox x:Name="ResultsList"
+        <ListBox x:Name="ResultsList" DisplayMemberPath="Name"
              Grid.Row="1"
              FontSize="16"/>
     </Grid>
