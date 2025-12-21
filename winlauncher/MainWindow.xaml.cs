@@ -17,6 +17,8 @@ namespace winlauncher
         {
             InitializeComponent();
             ResultsList.ItemsSource = _apps;
+            this.Loaded += (s, e) => ShowLauncher();
+
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -61,7 +63,17 @@ namespace winlauncher
             if (filtered.Count > 0)
                 ResultsList.SelectedIndex = 0;
         }
-
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            this.Hide();
+        }
+        public void ShowLauncher()
+        {
+            this.Show();
+            this.Activate();
+            SearchBox.Text = "";
+            SearchBox.Focus();
+        }
         private List<string> _apps = new List<string>
         {
             "notepad",

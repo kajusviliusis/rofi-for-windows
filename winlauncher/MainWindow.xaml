@@ -8,7 +8,8 @@
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     Background="#FF1E1E1E"
-    KeyDown="Window_KeyDown">
+    KeyDown="Window_KeyDown"
+    Deactivated="Window_Deactivated">
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
