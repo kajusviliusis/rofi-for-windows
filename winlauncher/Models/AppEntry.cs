@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace winlauncher
+namespace winlauncher.Models
 {
     public class AppEntry
     {
