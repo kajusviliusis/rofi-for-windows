@@ -1,11 +1,14 @@
-﻿using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
@@ -17,7 +20,7 @@ namespace winlauncher
         {
             InitializeComponent();
             ResultsList.ItemsSource = _apps;
-            this.Loaded += (s, e) => ShowLauncher();
+            this.Loaded += MainWindow_Loaded;
 
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
@@ -74,6 +77,41 @@ namespace winlauncher
             SearchBox.Text = "";
             SearchBox.Focus();
         }
+        private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_HOTKEY = 0x0312;
+
+            if (msg == WM_HOTKEY)
+            {
+                MessageBox.Show("Hotkey fired");
+                ShowLauncher();
+                handled = true;
+            }
+
+            return IntPtr.Zero;
+        }
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var helper = new System.Windows.Interop.WindowInteropHelper(this);
+            RegisterHotKey(helper.Handle, 1, 2, (uint)KeyInterop.VirtualKeyFromKey(Key.Space));
+
+            var source = System.Windows.Interop.HwndSource.FromHwnd(helper.Handle);
+            source.AddHook(HwndHook);
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            var helper = new System.Windows.Interop.WindowInteropHelper(this);
+            UnregisterHotKey(helper.Handle, 1);
+            base.OnClosed(e);
+        }
+
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
         private List<string> _apps = new List<string>
         {
             "notepad",
