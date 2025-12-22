@@ -9,7 +9,22 @@
     WindowStartupLocation="CenterScreen"
     Background="#FF1E1E1E"
     KeyDown="Window_KeyDown"
-    Deactivated="Window_Deactivated">
+    Deactivated="Window_Deactivated"
+    Opacity="0">
+
+    <!-- fade-in -->
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                        Storyboard.TargetProperty="Opacity"
+                        From="0" To="1"
+                        Duration="0:0:0.15"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -17,27 +32,143 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- search box -->
-        <TextBox x:Name="SearchBox"
-             FontSize="20"
-             Padding="8"
-             VerticalContentAlignment="Center"
-             Margin="0,0,0,10"
-             TextChanged="SearchBox_TextChanged"/>
+        <!-- search bar -->
+        <Border Grid.Row="0"
+                CornerRadius="8,8,0,0"
+                Background="#222"
+                BorderBrush="#444"
+                BorderThickness="1">
+            <TextBox x:Name="SearchBox"
+                     FontSize="20"
+                     Padding="8"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Foreground="White"
+                     VerticalContentAlignment="Center"
+                     TextChanged="SearchBox_TextChanged">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Background" Value="#222"/>
+                        <Setter Property="BorderBrush" Value="#444"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="CaretBrush" Value="White"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#888"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+
+            </TextBox>
+        </Border>
+
+        <!-- divide line -->
+        <Border Grid.Row="0"
+                Margin="0,48,0,0"
+                Height="1"
+                Background="#333"
+                HorizontalAlignment="Stretch"/>
 
         <!-- results list -->
-        <ListBox x:Name="ResultsList" Grid.Row="1" >
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="4">
-                        <Image Source="{Binding Icon}" Width="24" Height="24" Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Border Grid.Row="1"
+                CornerRadius="0,0,8,8"
+                Background="#222"
+                BorderBrush="#444"
+                BorderThickness="1">
+            <ListBox x:Name="ResultsList"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     Opacity="0">
+
+                <ListBox.RenderTransform>
+                    <TranslateTransform Y="10"/>
+                </ListBox.RenderTransform>
+
+                <!-- fade + slide animation -->
+                <ListBox.Triggers>
+                    <EventTrigger RoutedEvent="ListBox.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="0" To="1"
+                                    Duration="0:0:0.12"/>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
+                                    From="10" To="0"
+                                    Duration="0:0:0.12"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </ListBox.Triggers>
+
+                <!-- hover + selection style -->
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="6"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#22000000"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="#33000000"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <!-- item template -->
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="6">
+                            <Image Source="{Binding Icon}"
+                                   Width="24"
+                                   Height="24"
+                                   Margin="0,0,8,0"/>
+                            <TextBlock Text="{Binding Name}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <!-- scroll wheel -->
+                <ListBox.Resources>
+                    <Style TargetType="ScrollBar">
+                        <Setter Property="Width" Value="3"/>
+                        <Setter Property="Background" Value="Transparent"/>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ScrollBar">
+                                    <Grid Background="Transparent">
+                                        <Track Name="PART_Track">
+                                            <Track.Thumb>
+                                                <Thumb>
+                                                    <Thumb.Template>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Border Background="#666"
+                                                    CornerRadius="3"/>
+                                                        </ControlTemplate>
+                                                    </Thumb.Template>
+                                                </Thumb>
+                                            </Track.Thumb>
+                                        </Track>
+                                    </Grid>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Resources>
+                
+            </ListBox>
+        </Border>
 
     </Grid>
-
 
 </Window>
