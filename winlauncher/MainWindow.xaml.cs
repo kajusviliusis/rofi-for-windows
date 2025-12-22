@@ -76,11 +76,24 @@ namespace winlauncher
 
             if(string.IsNullOrWhiteSpace(query))
             {
-                ResultsList.ItemsSource = recentApps;
-                RecentLabel.Visibility = Visibility.Visible;
+                if (recentApps.Count == 0)
+                {
+                    ResultsList.ItemsSource = null;
+                    ResultsList.Visibility = Visibility.Collapsed;
+                    RecentLabel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    ResultsList.ItemsSource = recentApps;
+                    ResultsList.Visibility = Visibility.Visible;
+                    RecentLabel.Visibility = Visibility.Visible;
+                }
+
                 return;
             }
             RecentLabel.Visibility = Visibility.Collapsed;
+            ResultsList.Visibility = Visibility.Visible;
+            ResultsRow.Height = new GridLength(1, GridUnitType.Star);
 
             var filtered = _apps
                 .Select(a => new
@@ -135,8 +148,20 @@ namespace winlauncher
             SearchBox.Text = "";
             SearchBox.Focus();
 
-            ResultsList.ItemsSource = recentApps;
-            RecentLabel.Visibility = Visibility.Visible;
+            if(recentApps.Count== 0)
+            {
+                ResultsList.Visibility = Visibility.Collapsed;
+                RecentLabel.Visibility = Visibility.Collapsed;
+                ResultsRow.Height = new GridLength(0);
+                ResultsList.ItemsSource = null;
+            }
+            else
+            {
+                ResultsList.Visibility = Visibility.Visible;
+                RecentLabel.Visibility = Visibility.Visible;
+                ResultsRow.Height = new GridLength(1, GridUnitType.Star);
+                ResultsList.ItemsSource = recentApps;
+            }
         }
     }
 }

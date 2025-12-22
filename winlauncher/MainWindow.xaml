@@ -30,7 +30,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition x:Name="ResultsRow" Height="*"/>
         </Grid.RowDefinitions>
 
         <!-- search bar -->
@@ -92,7 +92,7 @@
             <ListBox x:Name="ResultsList"
                      Background="Transparent"
                      BorderThickness="0"
-                     Opacity="0">
+                     Opacity="1">
 
                 <ListBox.RenderTransform>
                     <TranslateTransform Y="10"/>
