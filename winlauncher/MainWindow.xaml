@@ -26,7 +26,7 @@
              TextChanged="SearchBox_TextChanged"/>
 
         <!-- results list -->
-        <ListBox x:Name="ResultsList" DisplayMemberPath="" >
+        <ListBox x:Name="ResultsList" Grid.Row="1" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="4">

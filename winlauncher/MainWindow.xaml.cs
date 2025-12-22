@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using winlauncher.Helpers;
 using winlauncher.Models;
 using winlauncher.Services;
 
@@ -61,9 +62,16 @@ namespace winlauncher
             string query = SearchBox.Text.ToLower();
 
             var filtered = _apps
-                .Where(a => a.Name.ToLower().Contains(query))
+                .Select(a => new
+                {
+                    App = a,
+                    Score = Fuzzy.Score(a.Name, query)
+                })
+                .Where(x => x.Score > 0)
+                .OrderByDescending(x => x.Score)
+                .Select(x => x.App)
                 .ToList();
-
+            
             ResultsList.ItemsSource = filtered;
 
             if (filtered.Count > 0)
