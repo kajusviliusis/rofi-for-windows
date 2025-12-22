@@ -29,6 +29,7 @@
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -71,9 +72,19 @@
                 Height="1"
                 Background="#333"
                 HorizontalAlignment="Stretch"/>
+        
+        <!-- recent -->
+        <TextBlock x:Name="RecentLabel"
+           Grid.Row="1"
+           Text="recent"
+           Foreground="#777"
+           FontSize="14"
+           Margin="4,0,0,6"
+           Visibility="Collapsed"/>
 
         <!-- results list -->
-        <Border Grid.Row="1"
+        <Border Grid.Row="2"
+                MaxHeight="400"
                 CornerRadius="0,0,8,8"
                 Background="#222"
                 BorderBrush="#444"

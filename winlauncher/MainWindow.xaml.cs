@@ -9,6 +9,7 @@ namespace winlauncher
     public partial class MainWindow : Window
     {
         private List<AppEntry> _apps;
+        private List<AppEntry> recentApps = new List<AppEntry>();
         private HotkeyManager _hotkeys;
 
         public MainWindow()
@@ -71,7 +72,15 @@ namespace winlauncher
 
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            string query = SearchBox.Text.ToLower();
+            string query = SearchBox.Text.Trim();
+
+            if(string.IsNullOrWhiteSpace(query))
+            {
+                ResultsList.ItemsSource = recentApps;
+                RecentLabel.Visibility = Visibility.Visible;
+                return;
+            }
+            RecentLabel.Visibility = Visibility.Collapsed;
 
             var filtered = _apps
                 .Select(a => new
@@ -97,6 +106,7 @@ namespace winlauncher
                 try
                 {
                     System.Diagnostics.Process.Start(app.Path);
+                    AddToRecent(app);
                 }
                 catch
                 {
@@ -104,7 +114,15 @@ namespace winlauncher
                 }
             }
         }
-
+        private void AddToRecent(AppEntry app)
+        {
+            recentApps.RemoveAll(a => a.Path == app.Path); //duplicates
+            recentApps.Insert(0,app);
+            if(recentApps.Count > 10)
+            {
+                recentApps.RemoveAt(recentApps.Count - 1);
+            }
+        }
         private void Window_Deactivated(object sender, EventArgs e)
         {
             this.Hide();
@@ -116,6 +134,9 @@ namespace winlauncher
             this.Activate();
             SearchBox.Text = "";
             SearchBox.Focus();
+
+            ResultsList.ItemsSource = recentApps;
+            RecentLabel.Visibility = Visibility.Visible;
         }
     }
 }
