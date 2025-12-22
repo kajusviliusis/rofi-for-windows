@@ -49,12 +49,24 @@ namespace winlauncher
                 LaunchSelected();
 
             else if (e.Key == Key.Down)
-                ResultsList.SelectedIndex =
-                    Math.Min(ResultsList.SelectedIndex + 1, ResultsList.Items.Count - 1);
+            {
+                if(ResultsList.Items.Count>0)
+                {
+                    ResultsList.SelectedIndex = Math.Min(ResultsList.SelectedIndex + 1, ResultsList.Items.Count - 1);
+                    ResultsList.ScrollIntoView(ResultsList.SelectedItem);
+                }
+                e.Handled = true;
+            }
 
             else if (e.Key == Key.Up)
-                ResultsList.SelectedIndex =
-                    Math.Max(ResultsList.SelectedIndex - 1, 0);
+            {
+                if (ResultsList.Items.Count>0)
+                {
+                    ResultsList.SelectedIndex = Math.Max(ResultsList.SelectedIndex - 1, 0);
+                    ResultsList.ScrollIntoView(ResultsList.SelectedItem);
+                }
+                e.Handled= true;
+            }
         }
 
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

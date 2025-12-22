@@ -8,7 +8,7 @@
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     Background="#FF1E1E1E"
-    KeyDown="Window_KeyDown"
+    PreviewKeyDown="Window_KeyDown"
     Deactivated="Window_Deactivated"
     Opacity="0">
 
