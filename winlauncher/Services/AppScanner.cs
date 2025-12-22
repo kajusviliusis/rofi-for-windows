@@ -27,7 +27,8 @@ namespace winlauncher.Services
                         apps.Add(new AppEntry
                         {
                             Name = System.IO.Path.GetFileNameWithoutExtension(file),
-                            Path = shortcut
+                            Path = shortcut,
+                            Icon = IconExtractor.GetIcon(shortcut)
                         });
                     }
                 }
