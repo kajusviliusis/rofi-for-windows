@@ -89,6 +89,7 @@ namespace winlauncher
                     RecentLabel.Visibility = Visibility.Visible;
                     ResultsRow.Height = new GridLength(1, GridUnitType.Star);
                     ResultsList.ItemsSource = recentApps;
+
                 }
 
                 return;
