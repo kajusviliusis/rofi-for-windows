@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using winlauncher.Helpers;
 using winlauncher.Models;
 using winlauncher.Services;
@@ -12,6 +14,10 @@ namespace winlauncher
         private List<AppEntry> recentApps = new List<AppEntry>();
         private HotkeyManager _hotkeys;
         private double _defaultHeight;
+
+        private readonly Storyboard _openStoryboard;
+        private readonly Storyboard _closeStoryboard;
+        private bool _isClosingAnimationRunning;
 
         public MainWindow()
         {
@@ -27,6 +33,9 @@ namespace winlauncher
             _hotkeys = new HotkeyManager(this, 1);
 
             Loaded += MainWindow_Loaded;
+
+            _openStoryboard = (Storyboard)TryFindResource("OpenStoryboard");
+            _closeStoryboard = (Storyboard)TryFindResource("CloseStoryboard");
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -46,7 +55,7 @@ namespace winlauncher
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                this.Hide();
+                BeginCloseAnimation();
 
             else if (e.Key == Key.Enter)
                 LaunchSelected();
@@ -151,11 +160,18 @@ namespace winlauncher
         }
         private void Window_Deactivated(object sender, EventArgs e)
         {
-            this.Hide();
+            BeginCloseAnimation();
         }
 
         public void ShowLauncher()
         {
+            // stop any running close animation and start open animation
+            if (_isClosingAnimationRunning && _closeStoryboard != null)
+            {
+                _closeStoryboard.Stop(this);
+                _isClosingAnimationRunning = false;
+            }
+
             this.Show();
             this.Activate();
             SearchBox.Text = "";
@@ -180,6 +196,32 @@ namespace winlauncher
                 this.SizeToContent = SizeToContent.Manual;
                 this.Height = _defaultHeight;
             }
+
+            // start open animation (if available)
+            _openStoryboard?.Begin(this, true);
+        }
+
+        private void BeginCloseAnimation()
+        {
+            if (_isClosingAnimationRunning)
+                return;
+
+            if (_closeStoryboard == null)
+            {
+                this.Hide();
+                return;
+            }
+
+            _isClosingAnimationRunning = true;
+            EventHandler onComplete = null;
+            onComplete = (s, e) =>
+            {
+                _closeStoryboard.Completed -= onComplete;
+                this.Hide();
+                _isClosingAnimationRunning = false;
+            };
+            _closeStoryboard.Completed += onComplete;
+            _closeStoryboard.Begin(this, true);
         }
     }
 }

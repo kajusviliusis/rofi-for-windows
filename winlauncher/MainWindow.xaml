@@ -11,33 +11,96 @@
         Background="Transparent"
         PreviewKeyDown="Window_KeyDown"
         Deactivated="Window_Deactivated"
-        Opacity="0">
+        Opacity="1"
+        FontFamily="Aptos">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+        <Storyboard x:Key="OpenStoryboard">
+            <DoubleAnimation Storyboard.TargetName="RootBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1"
+                             Duration="0:0:0.18"/>
+            <DoubleAnimation Storyboard.TargetName="RootScale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="0.98" To="1"
+                             Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="RootScale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="0.98" To="1"
+                             Duration="0:0:0.18">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="RootTranslate"
+                             Storyboard.TargetProperty="Y"
+                             From="-6" To="0"
+                             Duration="0:0:0.18"/>
+            <DoubleAnimation Storyboard.TargetName="ResultsList"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1"
+                             Duration="0:0:0.14"
+                             BeginTime="0:0:0.06"/>
+            <DoubleAnimation Storyboard.TargetName="ResultsListTranslate"
+                             Storyboard.TargetProperty="Y"
+                             From="10" To="0"
+                             Duration="0:0:0.14"
+                             BeginTime="0:0:0.06"/>
+        </Storyboard>
+
+        <Storyboard x:Key="CloseStoryboard">
+            <DoubleAnimation Storyboard.TargetName="RootBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="0:0:0.12"/>
+            <DoubleAnimation Storyboard.TargetName="RootScale"
+                             Storyboard.TargetProperty="ScaleX"
+                             From="1" To="0.98"
+                             Duration="0:0:0.12"/>
+            <DoubleAnimation Storyboard.TargetName="RootScale"
+                             Storyboard.TargetProperty="ScaleY"
+                             From="1" To="0.98"
+                             Duration="0:0:0.12"/>
+            <DoubleAnimation Storyboard.TargetName="RootTranslate"
+                             Storyboard.TargetProperty="Y"
+                             From="0" To="-6"
+                             Duration="0:0:0.12"/>
+            <DoubleAnimation Storyboard.TargetName="ResultsList"
+                             Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="0:0:0.08"/>
+            <DoubleAnimation Storyboard.TargetName="ResultsListTranslate"
+                             Storyboard.TargetProperty="Y"
+                             From="0" To="6"
+                             Duration="0:0:0.08"/>
+        </Storyboard>
     </Window.Resources>
 
-    <!-- fade-in -->
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                     From="0" To="1"
-                                     Duration="0:0:0.15"/>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </Window.Triggers>
-    <Border CornerRadius="16"
+    <Border x:Name="RootBorder"
+            CornerRadius="16"
             Background="#1E1E1E"
-            SnapsToDevicePixels="True">
+            SnapsToDevicePixels="True"
+            Opacity="0"
+            RenderTransformOrigin="0.5,0.5">
+        <Border.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform x:Name="RootScale" ScaleX="0.98" ScaleY="0.98"/>
+                <TranslateTransform x:Name="RootTranslate" Y="-6"/>
+            </TransformGroup>
+        </Border.RenderTransform>
+
         <Grid Margin="20">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition x:Name="ResultsRow" Height="*"/>
             </Grid.RowDefinitions>
-            <!-- search bar -->
+
             <Border Grid.Row="0"
                     CornerRadius="8,8,0,0"
                     Background="#222"
@@ -50,11 +113,10 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- search icon -->
                     <Rectangle Grid.Column="0"
                                Width="18"
                                Height="18"
-                               Fill="#777"
+                               Fill="White"
                                VerticalAlignment="Center"
                                Margin="10,0,8,0">
                         <Rectangle.OpacityMask>
@@ -62,11 +124,10 @@
                         </Rectangle.OpacityMask>
                     </Rectangle>
 
-                    <!-- textBox -->
                     <TextBox Grid.Column="1"
                              x:Name="SearchBox"
-                             FontSize="20"
-                             Padding="8,8,8,8"
+                             FontSize="18"
+                             Padding="9,5,0,0"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="White"
@@ -83,10 +144,9 @@
                                         <ControlTemplate TargetType="TextBox">
                                             <Grid>
                                                 <ScrollViewer x:Name="PART_ContentHost"/>
-                                                <!-- placeholder -->
                                                 <TextBlock Text="Search..."
-                                                           Foreground="#666"
-                                                           Margin="10,0,0,0"
+                                                           Foreground="#888"
+                                                           Margin="10,5,0,0"
                                                            VerticalAlignment="Center"
                                                            IsHitTestVisible="False"
                                                            Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -106,7 +166,6 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <!-- right icons -->
                     <StackPanel Grid.Column="2"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
@@ -114,7 +173,7 @@
                                 Margin="0,0,10,0">
                         <Rectangle Width="18"
                                    Height="18"
-                                   Fill="#777"
+                                   Fill="White"
                                    VerticalAlignment="Center"
                                    Margin="0,0,12,0">
                             <Rectangle.OpacityMask>
@@ -123,7 +182,7 @@
                         </Rectangle>
                         <Rectangle Width="18"
                                    Height="18"
-                                   Fill="#777"
+                                   Fill="White"
                                    VerticalAlignment="Center">
                             <Rectangle.OpacityMask>
                                 <ImageBrush ImageSource="pack://application:,,,/Assets/Icons/setting.png" />
@@ -133,14 +192,12 @@
                 </Grid>
             </Border>
 
-            <!-- divide line -->
             <Border Grid.Row="0"
                     Margin="0,48,0,0"
                     Height="1"
                     Background="#333"
                     HorizontalAlignment="Stretch"/>
 
-            <!-- recent -->
             <TextBlock x:Name="RecentLabel"
                        Grid.Row="1"
                        Text="recent"
@@ -149,7 +206,6 @@
                        Margin="4,0,0,6"
                        Visibility="Collapsed"/>
 
-            <!-- results list -->
             <Border Grid.Row="2"
                     MaxHeight="400"
                     CornerRadius="0,0,8,8"
@@ -159,47 +215,54 @@
                 <ListBox x:Name="ResultsList"
                          Background="Transparent"
                          BorderThickness="0"
-                         Opacity="1">
+                         Opacity="1"
+                         Foreground="White">
 
                     <ListBox.RenderTransform>
-                        <TranslateTransform Y="10"/>
+                        <TranslateTransform x:Name="ResultsListTranslate" Y="10"/>
                     </ListBox.RenderTransform>
 
-                    <!-- fade + slide animation -->
-                    <ListBox.Triggers>
-                        <EventTrigger RoutedEvent="ListBox.Loaded">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     From="0" To="1"
-                                                     Duration="0:0:0.12"/>
-                                    <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(TranslateTransform.Y)"
-                                                     From="10" To="0"
-                                                     Duration="0:0:0.12"/>
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                    </ListBox.Triggers>
-
-                    <!-- hover + selection style -->
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                            <Setter Property="OverridesDefaultStyle" Value="True"/>
                             <Setter Property="Padding" Value="6"/>
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="Foreground" Value="White"/>
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#22000000"/>
-                                </Trigger>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#33000000"/>
-                                </Trigger>
-                            </Style.Triggers>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="FontWeight" Value="Normal"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border x:Name="ItemBorder"
+                                                Background="Transparent"
+                                                CornerRadius="6"
+                                                SnapsToDevicePixels="True">
+                                            <ContentPresenter Margin="4,2"
+                                                              HorizontalAlignment="Stretch"
+                                                              RecognizesAccessKey="True" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#2261B0F0"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Setter Property="FontWeight" Value="Normal"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#61B0F0"/>
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="FontWeight" Value="Normal"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Foreground" Value="#777"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
 
-                    <!-- item template -->
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="6">
@@ -208,12 +271,14 @@
                                        Height="24"
                                        Margin="0,0,8,0"/>
                                 <TextBlock Text="{Binding Name}"
-                                           VerticalAlignment="Center"/>
+                                           VerticalAlignment="Center"
+                                           FontSize="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=FontSize}"
+                                           FontWeight="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=FontWeight}"
+                                           Foreground="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem}, Path=Foreground}"/>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
 
-                    <!-- scroll wheel -->
                     <ListBox.Resources>
                         <Style TargetType="ScrollBar">
                             <Setter Property="Width" Value="3"/>
@@ -227,7 +292,7 @@
                                                     <Thumb>
                                                         <Thumb.Template>
                                                             <ControlTemplate TargetType="Thumb">
-                                                                <Border Background="#666"
+                                                                <Border Background="#61B0F0"
                                                                         CornerRadius="3"/>
                                                             </ControlTemplate>
                                                         </Thumb.Template>
