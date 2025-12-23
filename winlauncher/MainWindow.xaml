@@ -12,6 +12,9 @@
         PreviewKeyDown="Window_KeyDown"
         Deactivated="Window_Deactivated"
         Opacity="0">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
 
     <!-- fade-in -->
     <Window.Triggers>
@@ -34,36 +37,68 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition x:Name="ResultsRow" Height="*"/>
             </Grid.RowDefinitions>
-
             <!-- search bar -->
             <Border Grid.Row="0"
                     CornerRadius="8,8,0,0"
                     Background="#222"
                     BorderBrush="#444"
                     BorderThickness="1">
-                <TextBox x:Name="SearchBox"
-                         FontSize="20"
-                         Padding="8"
-                         Background="Transparent"
-                         BorderThickness="0"
-                         Foreground="White"
-                         VerticalContentAlignment="Center"
-                         TextChanged="SearchBox_TextChanged">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#222"/>
-                            <Setter Property="BorderBrush" Value="#444"/>
-                            <Setter Property="BorderThickness" Value="1"/>
-                            <Setter Property="Foreground" Value="White"/>
-                            <Setter Property="CaretBrush" Value="White"/>
-                            <Style.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="True">
-                                    <Setter Property="BorderBrush" Value="#888"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
+                <Grid>
+                    <!-- search icon -->
+                    <TextBlock Text="🔍"
+                               FontSize="18" 
+                               VerticalAlignment="Center" 
+                               Margin="10,0,0,0" 
+                               Foreground="#777"/>
+                    <!-- textbox -->
+                    <TextBox x:Name="SearchBox"
+                             FontSize="20" 
+                             Padding="36,8,8,8"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Foreground="White"
+                             VerticalContentAlignment="Center"
+                             TextChanged="SearchBox_TextChanged"
+                             Text="">
+                        <!-- placeholder -->
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="CaretBrush" Value="White"/>
+                                <Setter Property="BorderBrush" Value="#444"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <Grid>
+                                                <ScrollViewer x:Name="PART_ContentHost"/>
+
+                                                <!-- placeholder -->
+                                                <TextBlock Text="Search..."
+                                   Foreground="#666"
+                                   Margin="38,0,0,0"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   Visibility="{Binding Text.IsEmpty,
+                                        RelativeSource={RelativeSource TemplatedParent},
+                                        Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="">
+                                        <Setter Property="CaretBrush" Value="White"/>
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocused" Value="True">
+                                        <Setter Property="BorderBrush" Value="#888"/>
+                                    </Trigger>
+
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
             </Border>
 
             <!-- divide line -->
