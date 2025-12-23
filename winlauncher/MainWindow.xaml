@@ -44,23 +44,34 @@
                     BorderBrush="#444"
                     BorderThickness="1">
                 <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
                     <!-- search icon -->
-                    <TextBlock Text="🔍"
-                               FontSize="18" 
-                               VerticalAlignment="Center" 
-                               Margin="10,0,0,0" 
-                               Foreground="#777"/>
-                    <!-- textbox -->
-                    <TextBox x:Name="SearchBox"
-                             FontSize="20" 
-                             Padding="36,8,8,8"
+                    <Rectangle Grid.Column="0"
+                               Width="18"
+                               Height="18"
+                               Fill="#777"
+                               VerticalAlignment="Center"
+                               Margin="10,0,8,0">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="pack://application:,,,/Assets/Icons/search.png" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+
+                    <!-- textBox -->
+                    <TextBox Grid.Column="1"
+                             x:Name="SearchBox"
+                             FontSize="20"
+                             Padding="8,8,8,8"
                              Background="Transparent"
                              BorderThickness="0"
                              Foreground="White"
                              VerticalContentAlignment="Center"
-                             TextChanged="SearchBox_TextChanged"
-                             Text="">
-                        <!-- placeholder -->
+                             TextChanged="SearchBox_TextChanged">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Setter Property="Foreground" Value="White"/>
@@ -72,16 +83,13 @@
                                         <ControlTemplate TargetType="TextBox">
                                             <Grid>
                                                 <ScrollViewer x:Name="PART_ContentHost"/>
-
                                                 <!-- placeholder -->
                                                 <TextBlock Text="Search..."
-                                   Foreground="#666"
-                                   Margin="38,0,0,0"
-                                   VerticalAlignment="Center"
-                                   IsHitTestVisible="False"
-                                   Visibility="{Binding Text.IsEmpty,
-                                        RelativeSource={RelativeSource TemplatedParent},
-                                        Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                           Foreground="#666"
+                                                           Margin="10,0,0,0"
+                                                           VerticalAlignment="Center"
+                                                           IsHitTestVisible="False"
+                                                           Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -93,11 +101,35 @@
                                     <Trigger Property="IsKeyboardFocused" Value="True">
                                         <Setter Property="BorderBrush" Value="#888"/>
                                     </Trigger>
-
                                 </Style.Triggers>
                             </Style>
                         </TextBox.Style>
                     </TextBox>
+
+                    <!-- right icons -->
+                    <StackPanel Grid.Column="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                Margin="0,0,10,0">
+                        <Rectangle Width="18"
+                                   Height="18"
+                                   Fill="#777"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,12,0">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/Assets/Icons/menu.png" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                        <Rectangle Width="18"
+                                   Height="18"
+                                   Fill="#777"
+                                   VerticalAlignment="Center">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="pack://application:,,,/Assets/Icons/setting.png" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </StackPanel>
                 </Grid>
             </Border>
 

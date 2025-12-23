@@ -11,17 +11,19 @@ namespace winlauncher
         private List<AppEntry> _apps;
         private List<AppEntry> recentApps = new List<AppEntry>();
         private HotkeyManager _hotkeys;
+        private double _defaultHeight;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            _defaultHeight = this.Height;
+            this.SizeToContent = SizeToContent.Manual;
+
             // load apps
             var scanner = new AppScanner();
             _apps = scanner.LoadStartMenuApps();
             ResultsList.ItemsSource = _apps;
-
-            // hotkey manager
             _hotkeys = new HotkeyManager(this, 1);
 
             Loaded += MainWindow_Loaded;
@@ -82,6 +84,8 @@ namespace winlauncher
                     RecentLabel.Visibility = Visibility.Collapsed;
                     ResultsRow.Height = new GridLength(0);
                     ResultsList.ItemsSource = null;
+
+                    this.SizeToContent = SizeToContent.Height;
                 }
                 else
                 {
@@ -90,13 +94,19 @@ namespace winlauncher
                     ResultsRow.Height = new GridLength(1, GridUnitType.Star);
                     ResultsList.ItemsSource = recentApps;
 
+                    this.SizeToContent = SizeToContent.Manual;
+                    this.Height = _defaultHeight;
                 }
 
                 return;
             }
+
             RecentLabel.Visibility = Visibility.Collapsed;
             ResultsList.Visibility = Visibility.Visible;
             ResultsRow.Height = new GridLength(1, GridUnitType.Star);
+
+            this.SizeToContent = SizeToContent.Manual;
+            this.Height = _defaultHeight;
 
             var filtered = _apps
                 .Select(a => new
@@ -157,6 +167,8 @@ namespace winlauncher
                 RecentLabel.Visibility = Visibility.Collapsed;
                 ResultsRow.Height = new GridLength(0);
                 ResultsList.ItemsSource = null;
+
+                this.SizeToContent = SizeToContent.Height;
             }
             else
             {
@@ -164,6 +176,9 @@ namespace winlauncher
                 RecentLabel.Visibility = Visibility.Visible;
                 ResultsRow.Height = new GridLength(1, GridUnitType.Star);
                 ResultsList.ItemsSource = recentApps;
+
+                this.SizeToContent = SizeToContent.Manual;
+                this.Height = _defaultHeight;
             }
         }
     }
