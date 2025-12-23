@@ -78,15 +78,17 @@ namespace winlauncher
             {
                 if (recentApps.Count == 0)
                 {
-                    ResultsList.ItemsSource = null;
                     ResultsList.Visibility = Visibility.Collapsed;
                     RecentLabel.Visibility = Visibility.Collapsed;
+                    ResultsRow.Height = new GridLength(0);
+                    ResultsList.ItemsSource = null;
                 }
                 else
                 {
-                    ResultsList.ItemsSource = recentApps;
                     ResultsList.Visibility = Visibility.Visible;
                     RecentLabel.Visibility = Visibility.Visible;
+                    ResultsRow.Height = new GridLength(1, GridUnitType.Star);
+                    ResultsList.ItemsSource = recentApps;
                 }
 
                 return;
