@@ -142,13 +142,14 @@
                                 <Setter Property="BorderBrush" Value="#444"/>
                                 <Setter Property="BorderThickness" Value="1"/>
                                 <Setter Property="Template">
+                                    <!-- search placeholder -->
                                     <Setter.Value>
                                         <ControlTemplate TargetType="TextBox">
                                             <Grid>
                                                 <ScrollViewer x:Name="PART_ContentHost"/>
                                                 <TextBlock Text="Search..."
                                                            Foreground="#888"
-                                                           Margin="10,5,0,0"
+                                                           Margin="12,5,0,0"
                                                            VerticalAlignment="Center"
                                                            IsHitTestVisible="False"
                                                            Visibility="{Binding Text.IsEmpty, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
@@ -168,7 +169,7 @@
                         </TextBox.Style>
                     </TextBox>
 
-                    <!-- right side icons -->
+                    <!-- right side icons
                     <StackPanel Grid.Column="2"
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Right"
@@ -192,6 +193,7 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                     </StackPanel>
+                    -->
                 </Grid>
             </Border>
 
@@ -291,15 +293,22 @@
                     <!-- scrollbar -->
                     <ListBox.Resources>
                         <Style TargetType="ScrollBar">
-                            <Setter Property="Width" Value="1"/>
-                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Width" Value="4"/>
+                            <Setter Property="MinWidth" Value="4"/>
+
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ScrollBar">
-                                        <Grid Background="Transparent">
-                                            <Track Name="PART_Track">
+                                        <Grid Width="{TemplateBinding Width}"
+                                              Height="{TemplateBinding Height}"
+                                              Background="Transparent">
+                                            <Track x:Name="PART_Track"
+                                                   IsDirectionReversed="True"
+                                                   Focusable="False">
                                                 <Track.Thumb>
-                                                    <Thumb>
+                                                    <Thumb x:Name="PART_Thumb"
+                                                           Width="{Binding RelativeSource={RelativeSource AncestorType=ScrollBar}, Path=Width}"
+                                                           Height="{Binding RelativeSource={RelativeSource AncestorType=ScrollBar}, Path=Height}">
                                                         <Thumb.Template>
                                                             <ControlTemplate TargetType="Thumb">
                                                                 <Border Background="#61B0F0"
@@ -310,6 +319,12 @@
                                                 </Track.Thumb>
                                             </Track>
                                         </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="Orientation" Value="Vertical">
+                                                <Setter Property="Width" Value="4"/>
+                                                <Setter TargetName="PART_Thumb" Property="Width" Value="4"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
