@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using System.Diagnostics;
 using winlauncher.Helpers;
 using winlauncher.Models;
 using winlauncher.Services;
@@ -140,7 +141,13 @@ namespace winlauncher
             {
                 try
                 {
-                    System.Diagnostics.Process.Start(app.Path);
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = app.Path,
+                        Arguments = app.Arguments ?? string.Empty,
+                        UseShellExecute = true
+                    };
+                    Process.Start(startInfo);
                     AddToRecent(app);
                 }
                 catch
@@ -165,7 +172,6 @@ namespace winlauncher
 
         public void ShowLauncher()
         {
-            // stop any running close animation and start open animation
             if (_isClosingAnimationRunning && _closeStoryboard != null)
             {
                 _closeStoryboard.Stop(this);
@@ -197,7 +203,6 @@ namespace winlauncher
                 this.Height = _defaultHeight;
             }
 
-            // start open animation (if available)
             _openStoryboard?.Begin(this, true);
         }
 

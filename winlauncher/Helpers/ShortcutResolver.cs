@@ -1,16 +1,21 @@
 ﻿using IWshRuntimeLibrary;
+using winlauncher.Models;
 
 namespace winlauncher.Helpers
 {
     public static class ShortcutResolver
     {
-        public static string? ResolveShortcut(string shortcutPath)
+        public static ShortcutInfo? ResolveShortcut(string shortcutPath)
         {
             try
             {
                 var shell = new WshShell();
                 IWshShortcut link = (IWshShortcut)shell.CreateShortcut(shortcutPath);
-                return link.TargetPath;
+                return new ShortcutInfo
+                {
+                    TargetPath = link.TargetPath,
+                    Arguments = link.Arguments
+                };
             }
             catch
             {
