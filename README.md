@@ -1,6 +1,6 @@
 # winLauncher
-- an application launcher for Windows - inspired by Rofi, that I use on Linux.
-- built with C# and WPF.
+- an Application launcher for Windows - inspired by Rofi, that I use on Linux.
+- Built with C# and WPF.
 
 ## Features
 - App search/launch
